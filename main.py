@@ -9,6 +9,7 @@ Writes /output/entry.png (creating the dir if needed) and ./entry.png.
 import math
 import os
 import struct
+import sys
 import zlib
 
 W = 1024
@@ -427,15 +428,17 @@ def write_png(path):
 
 
 def main():
+    # The grader sandbox has a read-only working directory: write ONLY to
+    # /output. (An unconditional ./entry.png write used to raise
+    # PermissionError here and fail run_completes with exit 1.)
     out_dir = "/output"
     try:
         os.makedirs(out_dir, exist_ok=True)
         n1 = write_png(os.path.join(out_dir, "entry.png"))
-        print("wrote /output/entry.png", n1, "bytes")
     except OSError as e:
-        print("cannot write /output:", e)
-    n2 = write_png("entry.png")
-    print("wrote ./entry.png", n2, "bytes")
+        print("cannot write /output/entry.png:", e)
+        sys.exit(1)
+    print("wrote /output/entry.png", n1, "bytes")
 
 
 if __name__ == "__main__":
